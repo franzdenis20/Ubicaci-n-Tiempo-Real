@@ -6,6 +6,7 @@ import { onLogin, onLogout } from '../store/auth/authSlice';
 export const useAuthInitialization = () => {
   const dispatch = useAppDispatch();
 
+  console.log("useAuthInitialization render")
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
 

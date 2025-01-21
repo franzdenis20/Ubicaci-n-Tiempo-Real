@@ -4,6 +4,7 @@ import { startLogin } from "../../store/auth/thunks"
 import { useAppDispatch, useAppSelector } from "../../store/hooks/useSlice"
 
 export const LoginPage = () => {
+  console.log("LoginPage render")
   const dispatch = useAppDispatch()
   const { status, errorMessage } = useAppSelector((state) => state.auth)
   const { formState, onInputChange, formValidation } = useForm({
