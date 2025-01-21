@@ -1,0 +1,97 @@
+CREATE TABLE administrators (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE associates (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    vehicle_type VARCHAR(50),
+    email VARCHAR(255) UNIQUE,
+    status BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE taxi_fees (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    associate_id UUID REFERENCES associates(id),
+    amount NUMERIC(10, 2) NOT NULL,
+    payment_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE rates (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    description VARCHAR(255) NOT NULL,
+    cost NUMERIC(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE routes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    origin VARCHAR(255) NOT NULL,
+    destination VARCHAR(255) NOT NULL,
+    distance_km NUMERIC(10, 2),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO administrators (username, password, email)
+VALUES ('IIJandGII', '65807159', 'iijandgii@gmail.com');
+
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.email IS NOT NULL THEN
+    INSERT INTO administrators (id, username, email)
+    VALUES (NEW.id, NEW.raw_user_meta_data->>'name', NEW.email);
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
+CREATE POLICY "allow_access_to_administrators"
+ON administrators
+FOR ALL
+USING (auth.uid() = id);
+
+CREATE POLICY "allow_access_to_associates"
+ON associates
+FOR ALL
+USING (EXISTS (
+    SELECT 1 FROM administrators WHERE administrators.id = auth.uid()
+));
+
+CREATE POLICY "allow_access_to_taxi_fees"
+ON taxi_fees
+FOR ALL
+USING (EXISTS (
+    SELECT 1 FROM administrators WHERE administrators.id = auth.uid()
+));
+
+CREATE POLICY "allow_access_to_rates"
+ON rates
+FOR ALL
+USING (EXISTS (
+    SELECT 1 FROM administrators WHERE administrators.id = auth.uid()
+));
+
+CREATE POLICY "allow_access_to_routes"
+ON routes
+FOR ALL
+USING (EXISTS (
+    SELECT 1 FROM administrators WHERE administrators.id = auth.uid()
+));
+
+ALTER TABLE administrators ENABLE ROW LEVEL SECURITY;
+ALTER TABLE associates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE taxi_fees ENABLE ROW LEVEL SECURITY;
+ALTER TABLE rates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE routes ENABLE ROW LEVEL SECURITY;

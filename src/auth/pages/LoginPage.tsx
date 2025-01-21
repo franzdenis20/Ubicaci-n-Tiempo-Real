@@ -1,7 +1,15 @@
+import { useForm } from "../hooks/useForm"
 
 export const LoginPage = () => {
-  console.log("entro a login page")
+
+  const { errorMessage, onInputChange, formValidation } = useForm({ 
+    username : "",
+    password : "",
+  })
+
   return (
-    <div>LoginPage</div>
+    <>
+    
+    </>
   )
 }
