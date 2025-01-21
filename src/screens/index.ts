@@ -1,3 +1,0 @@
-
-
-export { HomeScreen } from './HomeScreen';

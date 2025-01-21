@@ -1,0 +1,49 @@
+-- Tabla: Administradores
+CREATE TABLE administrators (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabla: Asociados
+CREATE TABLE associates (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    vehicle_type VARCHAR(50),
+    email VARCHAR(255) UNIQUE,
+    status BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabla: Tarifas de taxi
+CREATE TABLE taxi_fees (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    associate_id UUID REFERENCES associates(id) ON DELETE CASCADE,
+    amount NUMERIC(10, 2) NOT NULL,
+    payment_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabla: Tarifas generales
+CREATE TABLE rates (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    description VARCHAR(255) NOT NULL,
+    cost NUMERIC(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabla: Rutas
+CREATE TABLE routes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    origin VARCHAR(255) NOT NULL,
+    destination VARCHAR(255) NOT NULL,
+    distance_km NUMERIC(10, 2),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Índices
+CREATE INDEX idx_username ON administrators(username);
+CREATE INDEX idx_email ON administrators(email);

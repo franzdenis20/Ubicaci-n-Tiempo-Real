@@ -1,20 +1,20 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router'
+import { Provider } from 'react-redux'
+
+
+import { TarijaSur } from './TarijaSur'
+import { store } from './store'
+
 import './index.css'
 
-import MapsApp from './MapsApp.tsx'
-import mapboxgl from 'mapbox-gl'; 
-
-mapboxgl.accessToken = 'pk.eyJ1IjoiZnJhbnpiaXRsb3ZlciIsImEiOiJjbTYzNjJqdDgxNzdiMmtvNnY4ejI0bjZjIn0.IIYXClQFm2l-npxubHe4Ew';
-
-if(!navigator.geolocation){
-
-  alert('Tu navegador no tiene activador la Geolocalizacion');
-  throw new Error('Tu navegador no tiene activador la Geolocalizacion');
-
-}
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MapsApp />
+    <Provider store={store}>
+      <BrowserRouter>
+        <TarijaSur />
+      </BrowserRouter>
+    </Provider>
   </StrictMode>,
 )
