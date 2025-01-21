@@ -19,8 +19,8 @@ if(!navigator.geolocation){
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <MapsApp />
       <TarijaSur />
+      {/* <MapsApp /> */}
     </BrowserRouter>
   </StrictMode>,
 )
