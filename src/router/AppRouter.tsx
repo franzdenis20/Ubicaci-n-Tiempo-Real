@@ -5,9 +5,9 @@ export const AppRouter = () => {
   return (
     <>
       <Routes>
+        <Route path="/*" element={<AuthRoutes />} />
 
-        <Route path="/*" element = { <AuthRoutes /> } />
-
+        <Route path="/panel" element={<div>404</div>} />
       </Routes>
     </>
   )
