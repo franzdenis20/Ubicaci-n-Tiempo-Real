@@ -4,7 +4,7 @@ import { Admin, FormErrors } from "../interfaces";
 export const useForm = (initialForm: Admin) => {
   const [formState, setFormState] = useState<Admin>(initialForm);
 
-  const [errorMessage, setErrorMessage] = useState<FormErrors>({})
+  const [errors, setErrorMessage] = useState<FormErrors>({})
 
   const onInputChange = ({ target }: FormEvent) : void  => {
     const { name, value } = target as HTMLInputElement;
@@ -27,12 +27,16 @@ export const useForm = (initialForm: Admin) => {
   }
 
 
-  const formValidation = ( { username, password } : Admin) : boolean  => {
+  const formValidation = ( { username, password, email} : Admin) : boolean  => {
     const message : FormErrors= {}
     let isValidate : boolean = true;
 
     if ( username.length <= 0 ) {
       message.username = 'Field empty, please enter your name ';
+      isValidate = false;
+    }
+    if ( email.length <= 0 ) {
+      message.email = 'Field empty, please enter your name ';
       isValidate = false;
     }
     if ( password.length <= 0 ) {
@@ -51,7 +55,7 @@ export const useForm = (initialForm: Admin) => {
     ...formState,
     onInputChange,
     onResetForm,
-    errorMessage,
+    errors,
     formValidation,
   };
 };

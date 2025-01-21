@@ -1,10 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit"
-import { AuthState } from "../interfaces"
 
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { AuthState, User } from "../interfaces"
 
 
 const initialState: AuthState = {
-  status: "checking",
+  status: "not-authenticated",
   user: null,
   errorMessage: null,
 }
@@ -13,20 +13,20 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    onChecking: (state) => {
+      onChecking: (state) => {
       state.status = "checking"
       state.user = null
       state.errorMessage = null
     },
-    onLogin: (state, { payload }) => {
+    onLogin: (state, action: PayloadAction<User>) => {
       state.status = "authenticated"
-      state.user = payload
+      state.user = action.payload
       state.errorMessage = null
     },
-    onLogout: (state, { payload }) => {
+    onLogout: (state, action: PayloadAction<string | null>) => {
       state.status = "not-authenticated"
       state.user = null
-      state.errorMessage = payload
+      state.errorMessage = action.payload
     },
     clearErrorMessage: (state) => {
       state.errorMessage = null
@@ -35,4 +35,3 @@ export const authSlice = createSlice({
 })
 
 export const { onChecking, onLogin, onLogout, clearErrorMessage } = authSlice.actions
-
